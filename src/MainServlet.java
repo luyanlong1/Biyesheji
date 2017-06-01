@@ -18,10 +18,12 @@ public class MainServlet extends HttpServlet {
     int fanShakeHeadItem = 0;
     int fanSwitchItem = 0;
     int lightSwitchItem = 0;
+
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // http://localhost:8080/main?action=b&act2=zzzz
         String action=request.getParameter("action");
-        final String action2=request.getParameter("action2");
+        String action2=request.getParameter("action2");
         switch (action){
             case "tvSwitch":
                 tvSwitch();
@@ -112,6 +114,24 @@ public class MainServlet extends HttpServlet {
                 break;
             case "lightSwitch":
                 lightSwitch();
+                break;
+            case "airRoomTemper":
+                System.out.println("服务器返回当前室温的JSON数据包给客户端APP");
+                //返回一个json格式的数据包,20-27之间的一个随机数来模拟温度
+                int temp = 20+(int)(Math.random()*7);
+                String item = "{\"temp\":\""+temp+"\"}";
+                response.getOutputStream().print(item);
+                break;
+            case "admin":
+                System.out.println("服务器返回设备列表的JSON数据包给客户端APP");
+                //返回一个json格式的数据包,模拟存储在服务器的设备列表
+                //不支持中文
+                String equipList = "[{\"id\":\"1\",\"name\":\"ketingTV\"},{\"id\":\"2\",\"name\":\"ketingFAN\"}," +
+                        "{\"id\":\"3\",\"name\":\"ketingLIGHT\"},{\"id\":\"4\",\"name\":\"ketingAIR\"}," +
+                        "{\"id\":\"5\",\"name\":\"chufangTV\"},{\"id\":\"6\",\"name\":\"chufangFAN\"}," +
+                        "{\"id\":\"7\",\"name\":\"woshiTV\"}]";
+                response.getOutputStream().print(equipList);
+                break;
             default:
                 break;
         }
@@ -279,7 +299,6 @@ public class MainServlet extends HttpServlet {
             tvSwitchItem = 0;
         }
     }
-
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doPost(request,response);
